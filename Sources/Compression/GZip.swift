@@ -165,6 +165,13 @@ public struct GZip {
     }
 }
 
+extension GZip {
+    public static func decode(bytes: [UInt8]) throws -> [UInt8] {
+        let stream = InputByteStream(bytes)
+        return try decode(from: stream)
+    }
+}
+
 extension Date {
     init?(modificationTime: UInt32) {
         guard modificationTime > 0 else {

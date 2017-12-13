@@ -9,7 +9,7 @@
  */
 
 public struct CRC32 {
-    static var table: [UInt32] {
+    static let table: [UInt32] = {
         var table = [UInt32](repeating: 0, count: 256)
 
         var c: UInt32 = 0
@@ -26,7 +26,7 @@ public struct CRC32 {
         }
 
         return table
-    }
+    }()
 
     public private(set) var value: UInt32 = 0
 

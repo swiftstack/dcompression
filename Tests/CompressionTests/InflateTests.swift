@@ -9,11 +9,12 @@
  */
 
 import Test
+import Stream
 @testable import Compression
 
 class InflateTests: TestCase {
     func testInflateNoCompression() {
-        let stream = TestInputStream(bytes: [
+        let stream = InputByteStream([
             0b0000_0001, // Last block, no compression
             0b0000_1001, 0b0000_0000, // Len - 9, LSB
             0b1111_0110, 0b1111_1111, // nLen
@@ -30,7 +31,7 @@ class InflateTests: TestCase {
     }
 
     func testInflateFixedHuffman() {
-        let stream = TestInputStream(bytes: [
+        let stream = InputByteStream([
             0b0111_0011, 0b0100_1001, 0b0100_1101, 0b1100_1011,
             0b0100_1001, 0b0010_1100, 0b0100_1001, 0b0101_0101,
             0b0000_0000, 0b0001_0001, 0b0000_0000
@@ -46,7 +47,7 @@ class InflateTests: TestCase {
     }
 
     func testInflateDynamicHuffman() {
-        let stream = TestInputStream(bytes: [
+        let stream = InputByteStream([
             0b00001100, 0b11001000, 0b01000001, 0b00001010,
             0b10000000, 0b00100000, 0b00010000, 0b00000101,
             0b11010000, 0b01111101, 0b11010000, 0b00011101,
@@ -67,7 +68,6 @@ class InflateTests: TestCase {
             0b01101101, 0b10001101, 0b01001001, 0b11000101,
             0b01011001, 0b11011111, 0b01110101, 0b11111001,
             0b00000110, 0b00000000
-
         ])
         do {
             let bytes = try Inflate.decode(from: stream)

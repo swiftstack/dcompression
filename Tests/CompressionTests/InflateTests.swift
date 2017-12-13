@@ -78,8 +78,10 @@ class InflateTests: TestCase {
         } catch {
             fail(String(describing: error))
         }
-
+        // the stream should be empty
         assertThrowsError(try Inflate.decode(from: stream))
+        // convenience api
+        assertNoThrow(try Inflate.decode(bytes: stream.bytes))
     }
 
 

@@ -192,3 +192,10 @@ public struct Inflate {
         }
     }
 }
+
+extension Inflate {
+    public static func decode(bytes: [UInt8]) throws -> [UInt8] {
+        let stream = InputByteStream(bytes)
+        return try decode(from: stream)
+    }
+}

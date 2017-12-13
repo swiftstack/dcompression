@@ -1,4 +1,5 @@
 import Test
+import Stream
 @testable import Compression
 
 class HuffmanBinaryHeapTests: TestCase {
@@ -182,9 +183,7 @@ class HuffmanBinaryHeapTests: TestCase {
             (values: 280...287, bitsCount: 8)
         ])
 
-        let stream = TestInputStream(bytes: [
-            0b00010011, 0b00000110, 0b00000000
-        ])
+        let stream = InputByteStream([0b00010011, 0b00000110, 0b00000000])
         let bitReader = BitInputStream(source: stream)
 
         do {

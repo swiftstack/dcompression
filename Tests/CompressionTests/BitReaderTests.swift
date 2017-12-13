@@ -1,9 +1,10 @@
 import Test
+import Stream
 @testable import Compression
 
 class BitReaderTests: TestCase {
     func testBitReader() {
-        let stream = TestInputStream(bytes: [
+        let stream = InputByteStream([
             0b0011_1100,
             0b0101_1010,
         ])
@@ -31,7 +32,7 @@ class BitReaderTests: TestCase {
     }
 
     func testBitReaderCount() {
-        let stream = TestInputStream(bytes: [
+        let stream = InputByteStream([
             0b0111_0011, 0b0100_1001, 0b0100_1101, 0b1100_1011,
             0b0100_1001, 0b0010_1100, 0b0100_1001, 0b0101_0101,
             0b0000_0000, 0b0001_0001, 0b0000_0000

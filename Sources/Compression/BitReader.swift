@@ -38,7 +38,7 @@ class BitInputStream<T: InputStream>: BitReader {
 
     func read() throws -> Bool {
         if stored == 0 {
-            guard try source.read(to: &buffer, count: 1) == 1 else {
+            guard try source.read(to: &buffer, byteCount: 1) == 1 else {
                 throw BitStreamError.insufficientData
             }
             stored = 8
@@ -64,7 +64,7 @@ class BitInputStream<T: InputStream>: BitReader {
         let remain = count - stored
 
         let bytes = ((remain - 1) >> 3) + 1
-        guard try source.read(to: &buffer, count: bytes) == bytes else {
+        guard try source.read(to: &buffer, byteCount: bytes) == bytes else {
             throw BitStreamError.insufficientData
         }
         stored = bytes << 3

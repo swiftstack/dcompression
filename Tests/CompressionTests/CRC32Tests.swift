@@ -30,9 +30,17 @@ class CRC32Tests: TestCase {
         assertEqual(crc, 0x0)
     }
 
+    func testCRC32Stream() {
+        let bytes = [UInt8]("The quick brown fox jumps over the lazy dog".utf8)
+        let crc32Stream = CRC32Stream()
+        _ = try? crc32Stream.write(bytes)
+        assertEqual(crc32Stream.value, 0x414fa339)
+    }
+
     static var allTests = [
         ("testCRC32", testCRC32),
         ("testCRC32Fox", testCRC32Fox),
         ("testCRC32Zero", testCRC32Zero),
+        ("testCRC32Stream", testCRC32Stream),
     ]
 }

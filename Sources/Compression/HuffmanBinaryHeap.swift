@@ -67,9 +67,7 @@ extension HuffmanBinaryHeap {
 }
 
 extension HuffmanBinaryHeap {
-    init<T: Collection>(from array: T)
-        where T.Element == Int, T.Index == Int, T.IndexDistance == Int
-    {
+    init<T: Collection>(from array: T) where T.Element == Int, T.Index == Int {
         var huffmanValues = [HuffmanValue]()
         for i in 0..<array.count {
             let bitsCount = array[array.startIndex + i]

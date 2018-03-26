@@ -66,10 +66,4 @@ class BitReaderTests: TestCase {
 
         assertEqual(bitReader.stored, 1)
     }
-
-
-    static var allTests = [
-        ("testBitReader", testBitReader),
-        ("testBitReaderCount", testBitReaderCount),
-    ]
 }

@@ -18,9 +18,4 @@ class BlockTypeTests: TestCase {
         assertEqual(try BlockType(2), .dynamicHuffman)
         assertThrowsError(try BlockType(3))
     }
-
-
-    static var allTests = [
-        ("testBlockType", testBlockType)
-    ]
 }

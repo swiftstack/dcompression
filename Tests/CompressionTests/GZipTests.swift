@@ -31,9 +31,4 @@ class GZipTests: TestCase {
             fail(String(describing: error))
         }
     }
-
-
-    static var allTests = [
-        ("testDecode", testDecode),
-    ]
 }

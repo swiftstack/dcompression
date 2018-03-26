@@ -206,11 +206,4 @@ class HuffmanBinaryHeapTests: TestCase {
             fail(String(describing: error))
         }
     }
-
-
-    static var allTests = [
-        ("testHeapFromValues", testHeapFromValues),
-        ("testHeapFromRange", testHeapFromRange),
-        ("testRead", testRead),
-    ]
 }

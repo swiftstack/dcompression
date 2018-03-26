@@ -83,11 +83,4 @@ class InflateTests: TestCase {
         // convenience api
         assertNoThrow(try Inflate.decode(bytes: stream.bytes))
     }
-
-
-    static var allTests = [
-        ("testInflateNoCompression", testInflateNoCompression),
-        ("testInflateFixedHuffman", testInflateFixedHuffman),
-        ("testInflateDynamicHuffman", testInflateDynamicHuffman)
-    ]
 }

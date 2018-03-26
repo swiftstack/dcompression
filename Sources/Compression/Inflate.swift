@@ -29,7 +29,7 @@ public struct Inflate {
         return HuffmanBinaryHeap(from: [(values: 0...29, bitsCount: 5)])
     }()
 
-    public static func decode<T: InputStream>(
+    public static func decode<T: StreamReader>(
         from stream: T
     ) throws -> [UInt8] {
         var result = [UInt8]()
@@ -58,7 +58,7 @@ public struct Inflate {
         return result
     }
 
-    static func copyStored<T: InputStream>(
+    static func copyStored<T: StreamReader>(
         to result: inout [UInt8],
         from stream: T
     ) throws {
@@ -67,12 +67,9 @@ public struct Inflate {
         guard size == ~nsize else {
             throw Error.invalidData
         }
-
-        var block = [UInt8](repeating: 0, count: Int(size))
-        guard try stream.read(to: &block) == Int(size) else {
-            throw Error.insufficientData
+        try stream.read(count: Int(size)) { block in
+            result.append(contentsOf: block)
         }
-        result.append(contentsOf: block)
     }
 
     static func inflateFixed<T: BitReader>(

@@ -63,7 +63,7 @@ public struct GZip {
         public let modificationTime: Date?
         public let operatingSystem: OperatingSystem
 
-        init<T: InputStream>(from stream: T) throws {
+        init<T: StreamReader>(from stream: T) throws {
             let crc32Stream = CRC32Stream()
 
             let magic = try stream.read(UInt16.self)
@@ -100,11 +100,12 @@ public struct GZip {
 
             if flags.contains(.extra) {
                 let len = Int(try stream.read(UInt16.self))
-                var data = [UInt8](repeating: 0, count: len)
-                guard try stream.read(to: &data) == len else {
-                    throw GZip.Error.invalidExtra
+                guard try stream.cache(count: len) else {
+                     throw GZip.Error.invalidExtra
                 }
-                _ = try crc32Stream.write(data)
+                try stream.read(count: len) { bytes in
+                    try crc32Stream.write(bytes)
+                }
             }
 
             func readZeroTerminatedString() throws -> String? {
@@ -155,7 +156,7 @@ public struct GZip {
         case unsupportedCompressionMethod
     }
 
-    public static func decode<T: InputStream>(
+    public static func decode<T: StreamReader>(
         from stream: T
     ) throws -> [UInt8] {
         _ = try Header(from: stream)

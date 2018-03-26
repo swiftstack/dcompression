@@ -16,10 +16,6 @@ protocol BitReader {
     func flush()
 }
 
-enum BitStreamError: Error {
-    case insufficientData
-}
-
 let bitMasks: [UInt16] = [
     0b0000_0000_0000_0000,
     0b0000_0000_0000_0001, 0b0000_0000_0000_0011,
@@ -32,7 +28,7 @@ let bitMasks: [UInt16] = [
     0b0111_1111_1111_1111, 0b1111_1111_1111_1111,
 ]
 
-class BitInputStream<T: InputStream>: BitReader {
+class BitInputStream<T: StreamReader>: BitReader {
     let source: T
     var buffer: UInt16 = 0
     var stored = 0
@@ -46,11 +42,24 @@ class BitInputStream<T: InputStream>: BitReader {
         stored = 0
     }
 
+    private func feed(_ type: UInt8.Type) throws {
+        try withUnsafeMutablePointer(to: &buffer) { pointer in
+            try pointer.withMemoryRebound(to: UInt8.self, capacity: 2)
+            { pointer in
+                pointer.pointee = try source.read(UInt8.self)
+            }
+        }
+    }
+
+    private func feed(_ type: UInt16.Type) throws {
+        try withUnsafeMutablePointer(to: &buffer) { pointer in
+            pointer.pointee = try source.read(UInt16.self)
+        }
+    }
+
     func read() throws -> Bool {
         if stored == 0 {
-            guard try source.read(to: &buffer, byteCount: 1) == 1 else {
-                throw BitStreamError.insufficientData
-            }
+            try feed(UInt8.self)
             stored = 8
         }
         let bit = buffer & bitMasks[1]
@@ -74,8 +83,11 @@ class BitInputStream<T: InputStream>: BitReader {
         let remain = count - stored
 
         let bytes = ((remain - 1) >> 3) + 1
-        guard try source.read(to: &buffer, byteCount: bytes) == bytes else {
-            throw BitStreamError.insufficientData
+
+        switch bytes {
+        case 1: try feed(UInt8.self)
+        case 2: try feed(UInt16.self)
+        default: fatalError()
         }
         stored = bytes << 3
 

@@ -42,19 +42,14 @@ class BitInputStream<T: StreamReader>: BitReader {
         stored = 0
     }
 
+    @inline(__always)
     private func feed(_ type: UInt8.Type) throws {
-        try withUnsafeMutablePointer(to: &buffer) { pointer in
-            try pointer.withMemoryRebound(to: UInt8.self, capacity: 2)
-            { pointer in
-                pointer.pointee = try source.read(UInt8.self)
-            }
-        }
+        buffer = UInt16(try source.read(UInt8.self))
     }
 
+    @inline(__always)
     private func feed(_ type: UInt16.Type) throws {
-        try withUnsafeMutablePointer(to: &buffer) { pointer in
-            pointer.pointee = try source.read(UInt16.self)
-        }
+        buffer = try source.read(UInt16.self)
     }
 
     func read() throws -> Bool {
@@ -87,7 +82,7 @@ class BitInputStream<T: StreamReader>: BitReader {
         switch bytes {
         case 1: try feed(UInt8.self)
         case 2: try feed(UInt16.self)
-        default: fatalError()
+        default: fatalError("unreachable")
         }
         stored = bytes << 3
 

@@ -50,7 +50,7 @@ struct HuffmanBinaryHeap {
 }
 
 extension HuffmanBinaryHeap {
-    init(from ranges: [(values: CountableClosedRange<Int>, bitsCount: Int)]) {
+    init(from ranges: [(values: ClosedRange<Int>, bitsCount: Int)]) {
         var huffmanValues = [HuffmanValue]()
         for range in ranges {
             guard range.bitsCount > 0 else {

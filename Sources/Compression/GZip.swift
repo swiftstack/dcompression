@@ -57,7 +57,7 @@ public struct GZip {
             let crc32Stream = CRC32Stream()
 
             let magic = try stream.read(UInt16.self)
-            guard magic == 0x8b1f else {
+            guard magic == 0x1f8b else {
                 throw GZip.Error.invalidMagic
             }
             try crc32Stream.write(magic)
@@ -152,12 +152,12 @@ public struct GZip {
         _ = try Header(from: stream)
         let bytes = try Inflate.decode(from: stream)
 
-        let crc32 = try stream.read(UInt32.self)
+        let crc32 = try stream.read(UInt32.self).bigEndian
         guard CRC32.calculate(bytes: bytes) == crc32 else {
             throw Error.invalidCRC
         }
 
-        let inputSize = Int(try stream.read(UInt32.self))
+        let inputSize = Int(try stream.read(UInt32.self).bigEndian)
         guard bytes.count % (1 << 32) == inputSize else {
             throw Error.invalidInputSize
         }

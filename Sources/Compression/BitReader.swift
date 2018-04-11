@@ -49,7 +49,7 @@ class BitInputStream<T: StreamReader>: BitReader {
 
     @inline(__always)
     private func feed(_ type: UInt16.Type) throws {
-        buffer = try source.read(UInt16.self)
+        buffer = try source.read(UInt16.self).bigEndian
     }
 
     func read() throws -> Bool {

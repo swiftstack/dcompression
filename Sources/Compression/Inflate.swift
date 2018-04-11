@@ -62,8 +62,8 @@ public struct Inflate {
         to result: inout [UInt8],
         from stream: T
     ) throws {
-        let size = try stream.read(UInt16.self)
-        let nsize = try stream.read(UInt16.self)
+        let size = try stream.read(UInt16.self).bigEndian
+        let nsize = try stream.read(UInt16.self).bigEndian
         guard size == ~nsize else {
             throw Error.invalidData
         }

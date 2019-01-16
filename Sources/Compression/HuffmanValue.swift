@@ -1,4 +1,4 @@
-struct HuffmanValue {
+struct HuffmanValue: Equatable {
     let value: Int
     let bitsCount: Int
 }
@@ -10,9 +10,5 @@ extension HuffmanValue: Comparable {
         } else {
             return lhs.bitsCount < rhs.bitsCount
         }
-    }
-
-    static func ==(lhs: HuffmanValue, rhs: HuffmanValue) -> Bool {
-        return lhs.bitsCount == rhs.bitsCount && lhs.value == rhs.value
     }
 }

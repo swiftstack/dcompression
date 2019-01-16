@@ -53,7 +53,7 @@ public struct GZip {
         public let modificationTime: Date?
         public let operatingSystem: OperatingSystem
 
-        init<T: StreamReader>(from stream: T) throws {
+        init<T>(from stream: T) throws where T: StreamReader {
             let crc32Stream = CRC32Stream()
 
             let magic = try stream.read(UInt16.self)
@@ -146,9 +146,9 @@ public struct GZip {
         case unsupportedCompressionMethod
     }
 
-    public static func decode<T: StreamReader>(
-        from stream: T
-    ) throws -> [UInt8] {
+    public static func decode<T>(from stream: T) throws -> [UInt8]
+        where T: StreamReader
+    {
         _ = try Header(from: stream)
         let bytes = try Inflate.decode(from: stream)
 

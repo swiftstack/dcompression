@@ -150,7 +150,7 @@ public struct GZip {
         where T: StreamReader
     {
         _ = try Header(from: stream)
-        let bytes = try Inflate.decode(from: stream)
+        let bytes = try Deflate.decode(from: stream)
 
         let crc32 = try stream.read(UInt32.self).bigEndian
         guard CRC32.calculate(bytes: bytes) == crc32 else {

@@ -1,6 +1,6 @@
 import Stream
 
-public struct Inflate {
+extension Deflate {
     public enum Error: Swift.Error {
         case insufficientData
         case invalidData
@@ -182,9 +182,12 @@ public struct Inflate {
     }
 }
 
-extension Inflate {
+extension Deflate {
     public static func decode(bytes: [UInt8]) throws -> [UInt8] {
         let stream = InputByteStream(bytes)
         return try decode(from: stream)
     }
 }
+
+@available(*, deprecated, message: "Use Deflate.decode")
+public typealias Inflate = Deflate

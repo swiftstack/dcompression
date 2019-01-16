@@ -10,9 +10,9 @@ class InflateTests: TestCase {
             0b1111_0110, 0b1111_1111, // nLen
             1, 2, 3, 4, 5, 6, 7, 8, 9]) // Data
         scope {
-            let bytes = try Inflate.decode(from: stream)
+            let bytes = try Deflate.decode(from: stream)
             assertEqual(bytes, [1, 2, 3, 4, 5, 6, 7, 8, 9])
-            assertThrowsError(try Inflate.decode(from: stream))
+            assertThrowsError(try Deflate.decode(from: stream))
         }
     }
 
@@ -22,9 +22,9 @@ class InflateTests: TestCase {
             0b0100_1001, 0b0010_1100, 0b0100_1001, 0b0101_0101,
             0b0000_0000, 0b0001_0001, 0b0000_0000])
         scope {
-            let bytes = try Inflate.decode(from: stream)
+            let bytes = try Deflate.decode(from: stream)
             assertEqual(bytes, [UInt8]("Deflate late".utf8))
-            assertThrowsError(try Inflate.decode(from: stream))
+            assertThrowsError(try Deflate.decode(from: stream))
         }
     }
 
@@ -51,15 +51,15 @@ class InflateTests: TestCase {
             0b01011001, 0b11011111, 0b01110101, 0b11111001,
             0b00000110, 0b00000000])
         scope {
-            let bytes = try Inflate.decode(from: stream)
+            let bytes = try Deflate.decode(from: stream)
             let expected = [UInt8](
                 ("Congratulations on becoming an MCP. " +
                 "Please be advised that effective immediately\r\n").utf8)
             assertEqual(bytes, expected)
         }
         // the stream should be empty
-        assertThrowsError(try Inflate.decode(from: stream))
+        assertThrowsError(try Deflate.decode(from: stream))
         // convenience api
-        assertNoThrow(try Inflate.decode(bytes: stream.bytes))
+        assertNoThrow(try Deflate.decode(bytes: stream.bytes))
     }
 }

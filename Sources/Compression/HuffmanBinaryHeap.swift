@@ -1,4 +1,4 @@
-struct HuffmanBinaryHeap {
+struct HuffmanBinaryHeap: Equatable {
     let tree: [Int?]
 
     init(from values: [HuffmanValue]) {
@@ -87,11 +87,5 @@ extension HuffmanBinaryHeap {
                 return value
             }
         }
-    }
-}
-
-extension HuffmanBinaryHeap: Equatable {
-    static func ==(lhs: HuffmanBinaryHeap, rhs: HuffmanBinaryHeap) -> Bool {
-        return lhs.tree.elementsEqual(rhs.tree, by: { $0 == $1 })
     }
 }

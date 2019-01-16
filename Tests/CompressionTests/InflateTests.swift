@@ -8,32 +8,24 @@ class InflateTests: TestCase {
             0b0000_0001, // Last block, no compression
             0b0000_1001, 0b0000_0000, // Len - 9, LSB
             0b1111_0110, 0b1111_1111, // nLen
-            1, 2, 3, 4, 5, 6, 7, 8, 9 // Data
-        ])
-        do {
+            1, 2, 3, 4, 5, 6, 7, 8, 9]) // Data
+        scope {
             let bytes = try Inflate.decode(from: stream)
             assertEqual(bytes, [1, 2, 3, 4, 5, 6, 7, 8, 9])
-        } catch {
-            fail(String(describing: error))
+            assertThrowsError(try Inflate.decode(from: stream))
         }
-
-        assertThrowsError(try Inflate.decode(from: stream))
     }
 
     func testInflateFixedHuffman() {
         let stream = InputByteStream([
             0b0111_0011, 0b0100_1001, 0b0100_1101, 0b1100_1011,
             0b0100_1001, 0b0010_1100, 0b0100_1001, 0b0101_0101,
-            0b0000_0000, 0b0001_0001, 0b0000_0000
-        ])
-        do {
+            0b0000_0000, 0b0001_0001, 0b0000_0000])
+        scope {
             let bytes = try Inflate.decode(from: stream)
             assertEqual(bytes, [UInt8]("Deflate late".utf8))
-        } catch {
-            fail(String(describing: error))
+            assertThrowsError(try Inflate.decode(from: stream))
         }
-
-        assertThrowsError(try Inflate.decode(from: stream))
     }
 
     func testInflateDynamicHuffman() {
@@ -57,16 +49,13 @@ class InflateTests: TestCase {
             0b11001100, 0b11101000, 0b00111010, 0b00001001,
             0b01101101, 0b10001101, 0b01001001, 0b11000101,
             0b01011001, 0b11011111, 0b01110101, 0b11111001,
-            0b00000110, 0b00000000
-        ])
-        do {
+            0b00000110, 0b00000000])
+        scope {
             let bytes = try Inflate.decode(from: stream)
             let expected = [UInt8](
                 ("Congratulations on becoming an MCP. " +
                 "Please be advised that effective immediately\r\n").utf8)
             assertEqual(bytes, expected)
-        } catch {
-            fail(String(describing: error))
         }
         // the stream should be empty
         assertThrowsError(try Inflate.decode(from: stream))

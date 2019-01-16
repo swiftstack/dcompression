@@ -186,14 +186,12 @@ class HuffmanBinaryHeapTests: TestCase {
         let stream = InputByteStream([0b00010011, 0b00000110, 0b00000000])
         let bitReader = BitInputStream(source: stream)
 
-        do {
+        scope {
             var value = try huffman.read(from: bitReader)
             assertEqual(value, 144)
 
             value = try huffman.read(from: bitReader)
             assertEqual(value, 280)
-        } catch {
-            fail(String(describing: error))
         }
     }
 }

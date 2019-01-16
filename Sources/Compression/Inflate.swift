@@ -19,9 +19,9 @@ public struct Inflate {
         return HuffmanBinaryHeap(from: [(values: 0...29, bitsCount: 5)])
     }()
 
-    public static func decode<T: StreamReader>(
-        from stream: T
-    ) throws -> [UInt8] {
+    public static func decode<T>(from stream: T) throws -> [UInt8]
+        where T: StreamReader
+    {
         var result = [UInt8]()
 
         let bitReader = BitInputStream(source: stream)
@@ -48,10 +48,9 @@ public struct Inflate {
         return result
     }
 
-    static func copyStored<T: StreamReader>(
-        to result: inout [UInt8],
-        from stream: T
-    ) throws {
+    static func copyStored<T>(to result: inout [UInt8], from stream: T) throws
+        where T: StreamReader
+    {
         let size = try stream.read(UInt16.self).bigEndian
         let nsize = try stream.read(UInt16.self).bigEndian
         guard size == ~nsize else {
@@ -62,10 +61,11 @@ public struct Inflate {
         }
     }
 
-    static func inflateFixed<T: BitReader>(
+    static func inflateFixed<T>(
         to result: inout [UInt8],
-        from bitReader: T
-    ) throws {
+        from bitReader: T) throws
+        where T: BitReader
+    {
         try inflate(
             to: &result,
             from: bitReader,
@@ -73,10 +73,11 @@ public struct Inflate {
             distances: fixedHuffmanDistances)
     }
 
-    static func inflateDynamic<T: BitReader>(
+    static func inflateDynamic<T>(
         to result: inout [UInt8],
-        from bitReader: T
-    ) throws {
+        from bitReader: T) throws
+        where T: BitReader
+    {
         let valueCodesCount = try bitReader.read(5) + 257
         let distanceCodesCount = try bitReader.read(5) + 1
         let lengthsCodesCount = try bitReader.read(4) + 4
@@ -132,12 +133,13 @@ public struct Inflate {
             distances: distances)
     }
 
-    static func inflate<T: BitReader>(
+    static func inflate<T>(
         to result: inout [UInt8],
         from bitReader: T,
         codes: HuffmanBinaryHeap,
-        distances: HuffmanBinaryHeap
-    ) throws {
+        distances: HuffmanBinaryHeap) throws
+        where T: BitReader
+    {
         while true {
             guard let value = try codes.read(from: bitReader) else {
                 throw Error.invalidData

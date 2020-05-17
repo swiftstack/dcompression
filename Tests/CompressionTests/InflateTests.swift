@@ -11,8 +11,10 @@ class InflateTests: TestCase {
             1, 2, 3, 4, 5, 6, 7, 8, 9]) // Data
         scope {
             let bytes = try Deflate.decode(from: stream)
-            assertEqual(bytes, [1, 2, 3, 4, 5, 6, 7, 8, 9])
-            assertThrowsError(try Deflate.decode(from: stream))
+            expect(bytes == [1, 2, 3, 4, 5, 6, 7, 8, 9])
+            expect(throws: StreamError.insufficientData) {
+                _ = try Deflate.decode(from: stream)
+            }
         }
     }
 
@@ -23,12 +25,14 @@ class InflateTests: TestCase {
             0b0000_0000, 0b0001_0001, 0b0000_0000])
         scope {
             let bytes = try Deflate.decode(from: stream)
-            assertEqual(bytes, [UInt8]("Deflate late".utf8))
-            assertThrowsError(try Deflate.decode(from: stream))
+            expect(bytes == [UInt8]("Deflate late".utf8))
+            expect(throws: StreamError.insufficientData) {
+                _ = try Deflate.decode(from: stream)
+            }
         }
     }
 
-    func testInflateDynamicHuffman() {
+    func testInflateDynamicHuffman() throws {
         let stream = InputByteStream([
             0b00001100, 0b11001000, 0b01000001, 0b00001010,
             0b10000000, 0b00100000, 0b00010000, 0b00000101,
@@ -55,11 +59,13 @@ class InflateTests: TestCase {
             let expected = [UInt8](
                 ("Congratulations on becoming an MCP. " +
                 "Please be advised that effective immediately\r\n").utf8)
-            assertEqual(bytes, expected)
+            expect(bytes == expected)
         }
         // the stream should be empty
-        assertThrowsError(try Deflate.decode(from: stream))
+        expect(throws: StreamError.insufficientData) {
+            _ = try Deflate.decode(from: stream)
+        }
         // convenience api
-        assertNoThrow(try Deflate.decode(bytes: stream.bytes))
+        _ = try Deflate.decode(bytes: stream.bytes)
     }
 }

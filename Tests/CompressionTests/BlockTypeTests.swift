@@ -3,9 +3,11 @@ import Test
 
 class BlockTypeTests: TestCase {
     func testBlockType() {
-        assertEqual(try BlockType(0), .noCompression)
-        assertEqual(try BlockType(1), .fixedHuffman)
-        assertEqual(try BlockType(2), .dynamicHuffman)
-        assertThrowsError(try BlockType(3))
+        expect(try BlockType(0) == .noCompression)
+        expect(try BlockType(1) == .fixedHuffman)
+        expect(try BlockType(2) == .dynamicHuffman)
+        expect(throws: BlockType.Error.invalidType) {
+            try BlockType(3)
+        }
     }
 }

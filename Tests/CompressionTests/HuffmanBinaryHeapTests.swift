@@ -7,15 +7,13 @@ class HuffmanBinaryHeapTests: TestCase {
         let huffmanOne = HuffmanBinaryHeap(from: [
             HuffmanValue(value: 1, bitsCount: 1),
         ])
-        var expected: [Int?] = [nil, 1, nil, nil]
-        assertTrue(huffmanOne.tree.elementsEqual(expected, by: { $0 == $1 }))
+        expect(huffmanOne.tree == [nil, 1, nil, nil])
 
         let huffmanTwo = HuffmanBinaryHeap(from: [
             HuffmanValue(value: 1, bitsCount: 1),
             HuffmanValue(value: 2, bitsCount: 1)
         ])
-        expected = [nil, 1, 2, nil]
-        assertTrue(huffmanTwo.tree.elementsEqual(expected, by: { $0 == $1 }))
+        expect(huffmanTwo.tree == [nil, 1, 2, nil])
 
         let huffmanEight = HuffmanBinaryHeap(from: [
             HuffmanValue(value: 0, bitsCount: 3),
@@ -27,11 +25,11 @@ class HuffmanBinaryHeapTests: TestCase {
             HuffmanValue(value: 6, bitsCount: 3),
             HuffmanValue(value: 7, bitsCount: 3),
         ])
-        expected = [
+        let expected = [
             nil, nil, nil, nil, nil, nil, nil,
             0, 1, 2, 3, 4, 5, 6, 7, nil
         ]
-        assertTrue(huffmanEight.tree.elementsEqual(expected, by: { $0 == $1 }))
+        expect(huffmanEight.tree == expected)
     }
 
     func testHeapFromRange() {
@@ -41,7 +39,7 @@ class HuffmanBinaryHeapTests: TestCase {
             (values: 256...279, bitsCount: 7),
             (values: 280...287, bitsCount: 8)
         ])
-        assertEqual(huffman.tree.count, 1024)
+        expect(huffman.tree.count == 1024)
         let expected: [Int?] = [
             nil, nil, nil, nil, nil, nil, nil, nil,
             nil, nil, nil, nil, nil, nil, nil, nil,
@@ -172,7 +170,7 @@ class HuffmanBinaryHeapTests: TestCase {
             240, 241, 242, 243, 244, 245, 246, 247,
             248, 249, 250, 251, 252, 253, 254, 255,
             nil]
-        assertTrue(huffman.tree.elementsEqual(expected, by: { $0 == $1 }))
+        expect(huffman.tree == expected)
     }
 
     func testRead() {
@@ -188,10 +186,10 @@ class HuffmanBinaryHeapTests: TestCase {
 
         scope {
             var value = try huffman.read(from: bitReader)
-            assertEqual(value, 144)
+            expect(value == 144)
 
             value = try huffman.read(from: bitReader)
-            assertEqual(value, 280)
+            expect(value == 280)
         }
     }
 }

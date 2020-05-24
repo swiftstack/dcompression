@@ -37,11 +37,22 @@ public struct CRC32 {
 
 extension CRC32 {
     public mutating func update(bytes: [UInt8]) {
-        update(buffer: UnsafeBufferPointer(start: bytes, count: bytes.count))
+        update(pointer: bytes, count: bytes.count)
     }
 
     public static func calculate(bytes: [UInt8]) -> UInt32 {
-        return calculate(buffer:
-            UnsafeBufferPointer(start: bytes, count: bytes.count))
+        return calculate(pointer: bytes, count: bytes.count)
+    }
+}
+
+// suppress warnings for UnsafeBufferPointer
+
+private extension CRC32 {
+    static func calculate(pointer: UnsafePointer<UInt8>, count: Int) -> UInt32 {
+        calculate(buffer: UnsafeBufferPointer(start: pointer, count: count))
+    }
+
+    mutating func update(pointer: UnsafePointer<UInt8>, count: Int) {
+        update(buffer: UnsafeBufferPointer(start: pointer, count: count))
     }
 }

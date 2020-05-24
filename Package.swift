@@ -2,11 +2,11 @@
 import PackageDescription
 
 let package = Package(
-    name: "Compression",
+    name: "DCompression",
     products: [
         .library(
-            name: "Compression",
-            targets: ["Compression"]),
+            name: "DCompression",
+            targets: ["DCompression"]),
     ],
     dependencies: [
         .package(
@@ -18,10 +18,11 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "Compression",
-            dependencies: ["Stream"]),
+            name: "DCompression",
+            dependencies: ["Stream"],
+            path: "./Sources/Compression"),
         .testTarget(
             name: "CompressionTests",
-            dependencies: ["Compression", "Test"]),
+            dependencies: ["DCompression", "Test"]),
     ]
 )

@@ -1,6 +1,6 @@
 import Test
 import Stream
-@testable import Compression
+@testable import DCompression
 
 class BitReaderTests: TestCase {
     func testBitReader() {

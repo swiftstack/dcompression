@@ -1,5 +1,5 @@
 import Test
-@testable import Compression
+@testable import DCompression
 
 class CRC32Tests: TestCase {
     func testCRC32() {

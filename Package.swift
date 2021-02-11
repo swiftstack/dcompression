@@ -16,10 +16,16 @@ let package = Package(
         .target(
             name: "DCompression",
             dependencies: ["Stream"],
-            path: "./Sources/Compression"),
+            path: "./Sources/Compression",
+            swiftSettings: [
+                .unsafeFlags(["-Xfrontend", "-enable-experimental-concurrency"])
+            ]),
         .testTarget(
             name: "CompressionTests",
-            dependencies: ["DCompression", "Test"]),
+            dependencies: ["DCompression", "Test"],
+            swiftSettings: [
+                .unsafeFlags(["-Xfrontend", "-enable-experimental-concurrency"])
+            ]),
     ]
 )
 

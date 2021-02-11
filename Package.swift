@@ -20,14 +20,34 @@ let package = Package(
             swiftSettings: [
                 .unsafeFlags(["-Xfrontend", "-enable-experimental-concurrency"])
             ]),
-        .testTarget(
-            name: "CompressionTests",
-            dependencies: ["DCompression", "Test"],
-            swiftSettings: [
-                .unsafeFlags(["-Xfrontend", "-enable-experimental-concurrency"])
-            ]),
     ]
 )
+
+// MARK: - tests
+
+testTarget("Compression") { test in
+    test("BitReader")
+    test("BlockType")
+    test("CRC32")
+    test("GZip")
+    test("HuffmanBinaryHeap")
+    test("Inflate")
+}
+
+func testTarget(_ target: String, task: ((String) -> Void) -> Void) {
+    task { test in addTest(target: target, name: test) }
+}
+
+func addTest(target: String, name: String) {
+    package.targets.append(
+        .executableTarget(
+            name: "Tests/\(target)/\(name)",
+            dependencies: ["DCompression", "Test"],
+            path: "Tests/\(target)/\(name)",
+            swiftSettings: [
+                .unsafeFlags(["-Xfrontend", "-enable-experimental-concurrency"])
+            ]))
+}
 
 // MARK: - custom package source
 

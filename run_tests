@@ -1,0 +1,14 @@
+#!/bin/bash
+
+set -e
+
+swift build
+
+export DYLD_LIBRARY_PATH=/Library/Developer/Toolchains/swift-latest.xctoolchain/usr/lib/swift/macosx
+
+.build/debug/Tests/Compression/BitReader
+.build/debug/Tests/Compression/BlockType
+.build/debug/Tests/Compression/CRC32
+.build/debug/Tests/Compression/GZip
+.build/debug/Tests/Compression/HuffmanBinaryHeap
+.build/debug/Tests/Compression/Inflate

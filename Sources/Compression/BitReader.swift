@@ -1,8 +1,8 @@
 import Stream
 
 protocol BitReader {
-    func read() throws -> Bool
-    func read(_ count: Int) throws -> Int
+    func read() async throws -> Bool
+    func read(_ count: Int) async throws -> Int
     func flush()
 }
 
@@ -33,18 +33,18 @@ class BitInputStream<T: StreamReader>: BitReader {
     }
 
     @inline(__always)
-    private func feed(_ type: UInt8.Type) throws {
-        buffer = UInt16(try source.read(UInt8.self))
+    private func feed(_ type: UInt8.Type) async throws {
+        buffer = UInt16(try await source.read(UInt8.self))
     }
 
     @inline(__always)
-    private func feed(_ type: UInt16.Type) throws {
-        buffer = try source.read(UInt16.self).bigEndian
+    private func feed(_ type: UInt16.Type) async throws {
+        buffer = try await source.read(UInt16.self).bigEndian
     }
 
-    func read() throws -> Bool {
+    func read() async throws -> Bool {
         if stored == 0 {
-            try feed(UInt8.self)
+            try await feed(UInt8.self)
             stored = 8
         }
         let bit = buffer & bitMasks[1]
@@ -53,7 +53,7 @@ class BitInputStream<T: StreamReader>: BitReader {
         return bit != 0
     }
 
-    func read(_ count: Int) throws -> Int {
+    func read(_ count: Int) async throws -> Int {
         assert(count > 0 && count <= 16)
 
         if count <= stored {
@@ -70,8 +70,8 @@ class BitInputStream<T: StreamReader>: BitReader {
         let bytes = ((remain - 1) >> 3) + 1
 
         switch bytes {
-        case 1: try feed(UInt8.self)
-        case 2: try feed(UInt16.self)
+        case 1: try await feed(UInt8.self)
+        case 2: try await feed(UInt16.self)
         default: fatalError("unreachable")
         }
         stored = bytes << 3

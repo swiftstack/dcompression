@@ -53,55 +53,57 @@ public struct GZip {
         public let modificationTime: Date?
         public let operatingSystem: OperatingSystem
 
-        init<T>(from stream: T) throws where T: StreamReader {
+        static func decode<T>(from stream: T) async throws -> Self
+            where T: StreamReader
+        {
             let crc32Stream = CRC32Stream()
 
-            let magic = try stream.read(UInt16.self)
+            let magic = try await stream.read(UInt16.self)
             guard magic == 0x1f8b else {
                 throw GZip.Error.invalidMagic
             }
             try crc32Stream.write(magic)
 
-            let rawMethod = try stream.read(UInt8.self)
+            let rawMethod = try await stream.read(UInt8.self)
             guard let method = CompressionMethod(rawValue: rawMethod) else {
                 throw GZip.Error.unsupportedCompressionMethod
             }
             try crc32Stream.write(rawMethod)
 
-            let rawFlags = try stream.read(UInt8.self)
+            let rawFlags = try await stream.read(UInt8.self)
             let flags = Flags(rawValue: rawFlags)
             guard flags.isValid else {
                 throw GZip.Error.invalidFlags
             }
             try crc32Stream.write(rawFlags)
 
-            let extraFlags = try stream.read(UInt8.self)
+            let extraFlags = try await stream.read(UInt8.self)
             try crc32Stream.write(extraFlags)
 
-            let rawOperatingSystem = try stream.read(UInt8.self)
+            let rawOperatingSystem = try await stream.read(UInt8.self)
             guard let operatingSystem =
                 OperatingSystem(rawValue: rawOperatingSystem) else {
                     throw GZip.Error.invalidOperatingSystem
             }
             try crc32Stream.write(rawOperatingSystem)
 
-            let time = try stream.read(UInt32.self)
+            let time = try await stream.read(UInt32.self)
             try crc32Stream.write(time)
 
             if flags.contains(.extra) {
-                let len = Int(try stream.read(UInt16.self))
-                guard try stream.cache(count: len) else {
+                let len = Int(try await stream.read(UInt16.self))
+                guard try await stream.cache(count: len) else {
                      throw GZip.Error.invalidExtra
                 }
-                try stream.read(count: len) { bytes in
+                try await stream.read(count: len) { bytes in
                     try crc32Stream.write(bytes)
                 }
             }
 
-            func readZeroTerminatedString() throws -> String? {
+            func readZeroTerminatedString() async throws -> String? {
                 var bytes = [UInt8]()
                 while true {
-                    let nextByte = try stream.read(UInt8.self)
+                    let nextByte = try await stream.read(UInt8.self)
                     try crc32Stream.write(nextByte)
                     guard nextByte > 0 else {
                         break
@@ -112,27 +114,28 @@ public struct GZip {
             }
 
             let fileName = flags.contains(.name)
-                ? try readZeroTerminatedString()
+                ? try await readZeroTerminatedString()
                 : nil
 
             let comment = flags.contains(.comment)
-                ? try readZeroTerminatedString()
+                ? try await readZeroTerminatedString()
                 : nil
 
             if flags.contains(.crc) {
-                let crc16 = try stream.read(UInt16.self)
+                let crc16 = try await stream.read(UInt16.self)
                 let crc32 = crc32Stream.value
                 guard UInt16(truncatingIfNeeded: crc32) == crc16 else {
                     throw GZip.Error.invalidCRC
                 }
             }
 
-            self.compressionMethod = method
-            self.isTextFile = flags.contains(.text)
-            self.fileName = fileName
-            self.comment = comment
-            self.modificationTime = Date(modificationTime: time)
-            self.operatingSystem = operatingSystem
+            return Header.init(
+                compressionMethod: method,
+                isTextFile: flags.contains(.text),
+                fileName: fileName,
+                comment: comment,
+                modificationTime: Date(modificationTime: time),
+                operatingSystem: operatingSystem)
         }
     }
 
@@ -146,18 +149,18 @@ public struct GZip {
         case unsupportedCompressionMethod
     }
 
-    public static func decode<T>(from stream: T) throws -> [UInt8]
+    public static func decode<T>(from stream: T) async throws -> [UInt8]
         where T: StreamReader
     {
-        _ = try Header(from: stream)
-        let bytes = try Deflate.decode(from: stream)
+        _ = try await Header.decode(from: stream)
+        let bytes = try await Deflate.decode(from: stream)
 
-        let crc32 = try stream.read(UInt32.self).bigEndian
+        let crc32 = try await stream.read(UInt32.self).bigEndian
         guard CRC32.calculate(bytes: bytes) == crc32 else {
             throw Error.invalidCRC
         }
 
-        let inputSize = Int(try stream.read(UInt32.self).bigEndian)
+        let inputSize = Int(try await stream.read(UInt32.self).bigEndian)
         guard bytes.count % (1 << 32) == inputSize else {
             throw Error.invalidInputSize
         }
@@ -167,9 +170,9 @@ public struct GZip {
 }
 
 extension GZip {
-    public static func decode(bytes: [UInt8]) throws -> [UInt8] {
+    public static func decode(bytes: [UInt8]) async throws -> [UInt8] {
         let stream = InputByteStream(bytes)
-        return try decode(from: stream)
+        return try await decode(from: stream)
     }
 }
 

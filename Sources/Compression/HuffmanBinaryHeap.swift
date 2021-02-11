@@ -72,10 +72,10 @@ extension HuffmanBinaryHeap {
 }
 
 extension HuffmanBinaryHeap {
-    func read<T: BitReader>(from bitReader: T) throws -> Int? {
+    func read<T: BitReader>(from bitReader: T) async throws -> Int? {
         var index = 0
         while true {
-            let nextBit = try bitReader.read()
+            let nextBit = try await bitReader.read()
             switch nextBit {
             case false: index = index * 2 + 1
             case true: index = index * 2 + 2

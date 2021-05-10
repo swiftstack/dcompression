@@ -18,6 +18,7 @@ let package = Package(
             dependencies: ["Stream"],
             path: "./Sources/Compression",
             swiftSettings: [
+                .unsafeFlags(["-Xfrontend", "-disable-availability-checking"]),
                 .unsafeFlags(["-Xfrontend", "-enable-experimental-concurrency"])
             ]),
     ]
@@ -45,6 +46,7 @@ func addTest(target: String, name: String) {
             dependencies: ["DCompression", "Test"],
             path: "Tests/\(target)/\(name)",
             swiftSettings: [
+                .unsafeFlags(["-Xfrontend", "-disable-availability-checking"]),
                 .unsafeFlags(["-Xfrontend", "-enable-experimental-concurrency"])
             ]))
 }

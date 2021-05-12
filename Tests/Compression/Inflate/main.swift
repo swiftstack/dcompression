@@ -12,7 +12,7 @@ test.case("InflateNoCompression") {
 
     let bytes = try await Deflate.decode(from: stream)
     expect(bytes == [1, 2, 3, 4, 5, 6, 7, 8, 9])
-    expect(throws: StreamError.insufficientData) {
+    await expect(throws: StreamError.insufficientData) {
         _ = try await Deflate.decode(from: stream)
     }
 }
@@ -25,7 +25,7 @@ test.case("InflateFixedHuffman") {
 
     let bytes = try await Deflate.decode(from: stream)
     expect(bytes == [UInt8]("Deflate late".utf8))
-    expect(throws: StreamError.insufficientData) {
+    await expect(throws: StreamError.insufficientData) {
         _ = try await Deflate.decode(from: stream)
     }
 }
@@ -60,7 +60,7 @@ test.case("InflateDynamicHuffman") {
     expect(bytes == expected)
 
     // the stream should be empty
-    expect(throws: StreamError.insufficientData) {
+    await expect(throws: StreamError.insufficientData) {
         _ = try await Deflate.decode(from: stream)
     }
     // convenience api

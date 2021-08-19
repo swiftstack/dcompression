@@ -5,7 +5,7 @@ Compression algorithms
 ## Package.swift
 
 ```swift
-.package(url: "https://github.com/swift-stack/dcompression.git", .branch("fiber"))
+.package(url: "https://github.com/swiftstack/dcompression.git", .branch("fiber"))
 ```
 
 ## Memo

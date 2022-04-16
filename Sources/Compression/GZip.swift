@@ -26,22 +26,62 @@ public struct GZip {
             case deflate = 8
         }
 
-        public enum OperatingSystem: UInt8 {
-            case fat = 0
-            case amiga = 1
-            case vms = 2
-            case unix = 3
-            case vmCMS = 4
-            case atari = 5
-            case hpfs = 6
-            case macintosh = 7
-            case zSystem = 8
-            case cpM = 9
-            case tops20 = 10
-            case ntfs = 11
-            case qdos = 12
-            case acorn = 13
-            case unknown = 255
+        public enum OperatingSystem: RawRepresentable {
+            case fat
+            case amiga
+            case vms
+            case unix
+            case vmCMS
+            case atari
+            case hpfs
+            case macintosh
+            case zSystem
+            case cpM
+            case tops20
+            case ntfs
+            case qdos
+            case acorn
+            case unknown(UInt8)
+
+            public var rawValue: UInt8 {
+                switch self {
+                case .fat: return 0
+                case .amiga: return 1
+                case .vms: return 2
+                case .unix: return 3
+                case .vmCMS: return 4
+                case .atari: return 5
+                case .hpfs: return 6
+                case .macintosh: return 7
+                case .zSystem: return 8
+                case .cpM: return 9
+                case .tops20: return 10
+                case .ntfs: return 11
+                case .qdos: return 12
+                case .acorn: return 13
+                case .unknown(let int): return int
+                }
+            }
+
+            init(rawValue: UInt8) {
+                switch rawValue {
+                case 0: self = .fat
+                case 1: self = .amiga
+                case 2: self = .vms
+                case 3: self = .unix
+                case 4: self = .vmCMS
+                case 5: self = .atari
+                case 6: self = .hpfs
+                case 7: self = .macintosh
+                case 8: self = .zSystem
+                case 9: self = .cpM
+                case 10: self = .tops20
+                case 11: self = .hpfs
+                case 12: self = .qdos
+                case 13: self = .acorn
+                default: self = .unknown(rawValue)
+                }
+            }
         }
 
         public let compressionMethod: CompressionMethod
@@ -81,10 +121,7 @@ public struct GZip {
             try crc32Stream.write(extraFlags)
 
             let rawOperatingSystem = try await stream.read(UInt8.self)
-            guard let operatingSystem =
-                OperatingSystem(rawValue: rawOperatingSystem) else {
-                    throw GZip.Error.invalidOperatingSystem
-            }
+            let operatingSystem = OperatingSystem(rawValue: rawOperatingSystem)
             try crc32Stream.write(rawOperatingSystem)
 
             let time = try await stream.read(UInt32.self)
@@ -145,7 +182,6 @@ public struct GZip {
         case invalidFlags
         case invalidExtra
         case invalidInputSize
-        case invalidOperatingSystem
         case unsupportedCompressionMethod
     }
 

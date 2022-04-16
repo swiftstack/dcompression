@@ -14,6 +14,7 @@ let package = Package(
     ],
     dependencies: [
         .package(name: "Stream"),
+        .package(name: "FileSystem"),
         .package(name: "Test"),
     ],
     targets: [
@@ -33,6 +34,7 @@ testTarget("Compression") { test in
     test("GZip")
     test("HuffmanBinaryHeap")
     test("Inflate")
+    test("TAR")
 }
 
 func testTarget(_ target: String, task: ((String) -> Void) -> Void) {
@@ -43,7 +45,7 @@ func addTest(target: String, name: String) {
     package.targets.append(
         .executableTarget(
             name: "Tests/\(target)/\(name)",
-            dependencies: ["DCompression", "Test"],
+            dependencies: ["DCompression", "FileSystem", "Test"],
             path: "Tests/\(target)/\(name)"))
 }
 

@@ -12,3 +12,4 @@ export DYLD_LIBRARY_PATH=/Library/Developer/Toolchains/swift-latest.xctoolchain/
 .build/debug/Tests/Compression/GZip
 .build/debug/Tests/Compression/HuffmanBinaryHeap
 .build/debug/Tests/Compression/Inflate
+.build/debug/Tests/Compression/TAR

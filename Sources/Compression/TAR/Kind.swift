@@ -1,3 +1,5 @@
+import Stream
+
 extension TAR.Entry {
     public enum Kind {
         case file
@@ -49,5 +51,15 @@ extension TAR.Entry.Kind: RawRepresentable {
         case .init(ascii: "K"): self = .longLink
         default: return nil
         }
+    }
+}
+
+extension TAR.Entry.Kind {
+    init<T: StreamReader>(decoding stream: T) async throws {
+        let value = try await stream.read(UInt8.self)
+        guard let kind = TAR.Entry.Kind(rawValue: value) else {
+            throw TAR.Error.invalidKind(value)
+        }
+        self = kind
     }
 }

@@ -54,6 +54,7 @@ extension StreamReader {
 
     func readFixedWidthOctal(count: Int) async throws -> Int {
         let string = try await readFixedWidthString(count: count)
+        guard !string.isEmpty else { return 0 }
         guard let value = Int(string, radix: 0o10) else {
             throw TAR.Error.invalidField
         }

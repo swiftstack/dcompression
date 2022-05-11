@@ -17,7 +17,6 @@ extension TAR {
         public let devminor: [UInt8]
         public let prefix: [UInt8]
         public let descriptor: [UInt8]
-
         public let data: [UInt8]
     }
 }

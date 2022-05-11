@@ -19,11 +19,10 @@ extension TAR.Entry {
         self.devminor = try await stream.read(count: 8)
         self.prefix = try await stream.read(count: 155)
         self.descriptor = try await stream.read(count: 12)
-
         self.data = try await stream.read(count: size)
-
-        // FIXME: padding?
-        try await stream.consume(while: { $0 == 0 })
+        if size % 512 > 0 {
+            try await stream.consume(count: 512 - size % 512)
+        }
     }
 }
 

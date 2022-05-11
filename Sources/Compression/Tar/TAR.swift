@@ -15,10 +15,20 @@ public struct TAR {
         from stream: T,
         compression: Compression = .none
     ) async throws -> [Entry] where T: StreamReader {
-        switch compression {
-        case .none: return try await .init(decoding: stream)
-        case .gzip: return try await .init(decoding: GZip.decode(from: stream))
+        let entries: [Entry] = compression == .gzip
+            ? try await .init(decoding: GZip.decode(from: stream))
+            : try await .init(decoding: stream)
+
+        return entries.removeBlockPadding()
+    }
+}
+
+extension Array where Element == TAR.Entry {
+    func removeBlockPadding() -> Self {
+        if let index = firstIndex(where: { $0.name.isEmpty && $0.size == 0 }) {
+            return .init(self[0..<index])
         }
+        return self
     }
 }
 

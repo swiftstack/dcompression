@@ -4,7 +4,7 @@ extension TAR.Entry {
     public enum Kind {
         case file
         case link
-        case reserved2
+        case symlink
         case character
         case block
         case directory
@@ -22,7 +22,7 @@ extension TAR.Entry.Kind: RawRepresentable {
         switch self {
         case .file: return .init(ascii: "0")
         case .link: return .init(ascii: "1")
-        case .reserved2: return .init(ascii: "2")
+        case .symlink: return .init(ascii: "2")
         case .character: return .init(ascii: "3")
         case .block: return .init(ascii: "4")
         case .directory: return .init(ascii: "5")
@@ -39,7 +39,7 @@ extension TAR.Entry.Kind: RawRepresentable {
         switch rawValue {
         case 0, .init(ascii: "0"): self = .file
         case .init(ascii: "1"): self = .link
-        case .init(ascii: "2"): self = .reserved2
+        case .init(ascii: "2"): self = .symlink
         case .init(ascii: "3"): self = .character
         case .init(ascii: "4"): self = .block
         case .init(ascii: "5"): self = .directory

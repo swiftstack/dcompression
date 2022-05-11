@@ -2,7 +2,7 @@ import Stream
 
 extension TAR {
     public struct Entry {
-        public let name: String
+        public var name: String
         public let mode: Int
         public let uid: Int
         public let gid: Int

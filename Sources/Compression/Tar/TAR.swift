@@ -19,7 +19,7 @@ public struct TAR {
             ? try await .init(decoding: GZip.decode(from: stream))
             : try await .init(decoding: stream)
 
-        return entries.removeBlockPadding()
+        return entries.removeBlockPadding().mergeLongNames()
     }
 }
 
@@ -29,6 +29,25 @@ extension Array where Element == TAR.Entry {
             return .init(self[0..<index])
         }
         return self
+    }
+
+    func mergeLongNames() -> Self {
+        var result: Self = []
+        var longName = ""
+
+        for var entry in self {
+            guard entry.typeflag != .longName else {
+                longName = .init(decoding: entry.data, as: UTF8.self)
+                continue
+            }
+            if !longName.isEmpty {
+                entry.name = longName
+                longName = ""
+            }
+            result.append(entry)
+        }
+
+        return result
     }
 }
 

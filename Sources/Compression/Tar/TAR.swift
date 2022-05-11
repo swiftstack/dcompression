@@ -7,7 +7,8 @@ public struct TAR {
     }
 
     public enum Error: Swift.Error {
-        case invalidField
+        case invalidKind(UInt8)
+        case invalidSize(String)
     }
 
     public static func decode<T>(

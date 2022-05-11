@@ -10,6 +10,8 @@ extension TAR.Entry {
         case reserved7
         case fileHeader
         case globalHeader
+        case longName
+        case longLink
     }
 }
 
@@ -26,6 +28,8 @@ extension TAR.Entry.Kind: RawRepresentable {
         case .reserved7: return .init(ascii: "7")
         case .fileHeader: return .init(ascii: "x")
         case .globalHeader: return .init(ascii: "g")
+        case .longName: return .init(ascii: "L")
+        case .longLink: return .init(ascii: "K")
         }
     }
 
@@ -41,6 +45,8 @@ extension TAR.Entry.Kind: RawRepresentable {
         case .init(ascii: "7"): self = .reserved7
         case .init(ascii: "x"): self = .fileHeader
         case .init(ascii: "g"): self = .globalHeader
+        case .init(ascii: "L"): self = .longName
+        case .init(ascii: "K"): self = .longLink
         default: return nil
         }
     }

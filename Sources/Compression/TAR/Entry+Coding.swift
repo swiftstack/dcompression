@@ -56,7 +56,7 @@ extension StreamReader {
         let string = try await readFixedWidthString(count: count)
         guard !string.isEmpty else { return 0 }
         guard let value = Int(string, radix: 0o10) else {
-            throw TAR.Error.invalidField
+            throw TAR.Error.invalidSize(string)
         }
         return value
     }

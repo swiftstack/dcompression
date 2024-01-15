@@ -21,7 +21,7 @@ public struct CRC32 {
     public private(set) var value: UInt32 = 0
 
     public mutating func update(buffer: UnsafeBufferPointer<UInt8>) {
-        var c: UInt32  = value ^ 0xffffffff
+        var c: UInt32 = value ^ 0xffffffff
         for n in 0..<buffer.count {
             c = CRC32.table[Int((c ^ UInt32(buffer[n])) & 0xff)] ^ (c >> 8)
         }

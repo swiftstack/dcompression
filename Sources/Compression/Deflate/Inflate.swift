@@ -48,9 +48,10 @@ extension Deflate {
         return result
     }
 
-    static func copyStored<T>(to result: inout [UInt8], from stream: T) async throws
-        where T: StreamReader
-    {
+    static func copyStored<T>(
+        to result: inout [UInt8],
+        from stream: T
+    ) async throws where T: StreamReader {
         let size = try await stream.read(UInt16.self).bigEndian
         let nsize = try await stream.read(UInt16.self).bigEndian
         guard size == ~nsize else {
@@ -63,9 +64,8 @@ extension Deflate {
 
     static func inflateFixed<T>(
         to result: inout [UInt8],
-        from bitReader: T) async throws
-        where T: BitReader
-    {
+        from bitReader: T
+    ) async throws where T: BitReader {
         try await inflate(
             to: &result,
             from: bitReader,
@@ -75,9 +75,8 @@ extension Deflate {
 
     static func inflateDynamic<T>(
         to result: inout [UInt8],
-        from bitReader: T) async throws
-        where T: BitReader
-    {
+        from bitReader: T
+    ) async throws where T: BitReader {
         let valueCodesCount = try await bitReader.read(5) + 257
         let distanceCodesCount = try await bitReader.read(5) + 1
         let lengthsCodesCount = try await bitReader.read(4) + 4
@@ -99,7 +98,9 @@ extension Deflate {
             }
         }
         while lengths.count < valueCodesCount + distanceCodesCount {
-            guard let code = try await lengthsOfLengths.read(from: bitReader) else {
+            guard
+                let code = try await lengthsOfLengths.read(from: bitReader)
+            else {
                 throw Error.invalidData
             }
 
@@ -137,7 +138,8 @@ extension Deflate {
         to result: inout [UInt8],
         from bitReader: T,
         codes: HuffmanBinaryHeap,
-        distances: HuffmanBinaryHeap) async throws
+        distances: HuffmanBinaryHeap
+    ) async throws
         where T: BitReader
     {
         while true {
@@ -156,13 +158,14 @@ extension Deflate {
                     length += try await bitReader.read(lengthExtraBits)
                 }
 
-                guard let distanceCode = try await distances.read(from: bitReader),
-                    distanceCode >= 0 && distanceCode <= 29 else {
+                guard
+                    let code = try await distances.read(from: bitReader),
+                    code >= 0 && code <= 29
+                else {
                         throw Error.invalidData
                 }
-                var distance = DistanceCodes.distance(for: distanceCode)
-                let distanceExtraBits =
-                    DistanceCodes.extraBitsCount(for: distanceCode)
+                var distance = DistanceCodes.distance(for: code)
+                let distanceExtraBits = DistanceCodes.extraBitsCount(for: code)
                 if distanceExtraBits > 0 {
                     distance += try await bitReader.read(distanceExtraBits)
                 }

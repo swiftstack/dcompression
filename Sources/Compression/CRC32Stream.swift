@@ -20,8 +20,8 @@ public class CRC32Stream: OutputStream {
     @inlinable
     public func write(
         from pointer: UnsafeRawPointer,
-        byteCount count: Int) throws -> Int
-    {
+        byteCount count: Int
+    ) async throws -> Int {
         try write(.init(start: pointer, count: count))
         return count
     }

@@ -3,7 +3,7 @@ import Stream
 
 @testable import DCompression
 
-test.case("InflateNoCompression") {
+test("InflateNoCompression") {
     let stream = InputByteStream([
         0b0000_0001, // Last block, no compression
         0b0000_1001, 0b0000_0000, // Len - 9, LSB
@@ -17,7 +17,7 @@ test.case("InflateNoCompression") {
     }
 }
 
-test.case("InflateFixedHuffman") {
+test("InflateFixedHuffman") {
     let stream = InputByteStream([
         0b0111_0011, 0b0100_1001, 0b0100_1101, 0b1100_1011,
         0b0100_1001, 0b0010_1100, 0b0100_1001, 0b0101_0101,
@@ -30,7 +30,7 @@ test.case("InflateFixedHuffman") {
     }
 }
 
-test.case("InflateDynamicHuffman") {
+test("InflateDynamicHuffman") {
     let stream = InputByteStream([
         0b00001100, 0b11001000, 0b01000001, 0b00001010,
         0b10000000, 0b00100000, 0b00010000, 0b00000101,
@@ -67,4 +67,4 @@ test.case("InflateDynamicHuffman") {
     _ = try await Deflate.decode(bytes: stream.bytes)
 }
 
-test.run()
+await run()

@@ -3,7 +3,7 @@ import Stream
 
 @testable import DCompression
 
-test.case("HeapFromValues") {
+test("HeapFromValues") {
     let huffmanOne = HuffmanBinaryHeap(from: [
         HuffmanValue(value: 1, bitsCount: 1),
     ])
@@ -32,7 +32,7 @@ test.case("HeapFromValues") {
     expect(huffmanEight.tree == expected)
 }
 
-test.case("HeapFromRange") {
+test("HeapFromRange") {
     let huffman = HuffmanBinaryHeap(from: [
         (values: 0...143, bitsCount: 8),
         (values: 144...255, bitsCount: 9),
@@ -173,7 +173,7 @@ test.case("HeapFromRange") {
     expect(huffman.tree == expected)
 }
 
-test.case("Read") {
+test("Read") {
     let huffman = HuffmanBinaryHeap(from: [
         (values: 0...143, bitsCount: 8),
         (values: 144...255, bitsCount: 9),
@@ -190,4 +190,4 @@ test.case("Read") {
     expect(value == 280)
 }
 
-test.run()
+await run()

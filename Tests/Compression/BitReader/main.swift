@@ -3,7 +3,7 @@ import Stream
 
 @testable import DCompression
 
-test.case("BitReader") {
+test("BitReader") {
     let stream = InputByteStream([
         0b0011_1100,
         0b0101_1010,
@@ -31,7 +31,7 @@ test.case("BitReader") {
     expect(try await bitReader.read() == false)
 }
 
-test.case("BitReaderCount") {
+test("BitReaderCount") {
     let stream = InputByteStream([
         0b0111_0011, 0b0100_1001, 0b0100_1101, 0b1100_1011,
         0b0100_1001, 0b0010_1100, 0b0100_1001, 0b0101_0101,
@@ -57,4 +57,4 @@ test.case("BitReaderCount") {
     expect(bitReader.stored == 1)
 }
 
-test.run()
+await run()

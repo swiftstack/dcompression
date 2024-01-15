@@ -2,7 +2,7 @@ import Test
 
 @testable import DCompression
 
-test.case("BlockType") {
+test("BlockType") {
     expect(try BlockType(0) == .noCompression)
     expect(try BlockType(1) == .fixedHuffman)
     expect(try BlockType(2) == .dynamicHuffman)
@@ -11,4 +11,4 @@ test.case("BlockType") {
     }
 }
 
-test.run()
+await run()

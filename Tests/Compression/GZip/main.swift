@@ -3,7 +3,7 @@ import Stream
 
 @testable import DCompression
 
-test.case("Decode") {
+test("Decode") {
     let encoded = InputByteStream([
         0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x13, 0xf3, 0x48, 0xcd, 0xc9, 0xc9, 0xd7,
@@ -17,4 +17,4 @@ test.case("Decode") {
     _ = try await GZip.decode(bytes: encoded.bytes)
 }
 
-test.run()
+await run()

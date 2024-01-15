@@ -3,7 +3,7 @@ import Stream
 import FileSystem
 import DCompression
 
-test.case("tar archive") {
+test("tar archive") {
     let path = try Path(#file)
         .deletingLastComponent
         .appending("archive.tgz")
@@ -29,4 +29,4 @@ test.case("tar archive") {
     expect(items[2].size == 8)
 }
 
-test.run()
+await run()

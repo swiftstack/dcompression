@@ -20,7 +20,9 @@ let package = Package(
     targets: [
         .target(
             name: "DCompression",
-            dependencies: ["Stream"],
+            dependencies: [
+                .product(name: "Stream", package: "stream"),
+            ],
             path: "./Sources/Compression"),
     ]
 )
@@ -45,7 +47,11 @@ func addTest(target: String, name: String) {
     package.targets.append(
         .executableTarget(
             name: "Tests/\(target)/\(name)",
-            dependencies: ["DCompression", "FileSystem", "Test"],
+            dependencies: [
+                .target(name: "DCompression"),
+                .product(name: "FileSystem", package: "filesystem"),
+                .product(name: "Test", package: "test"),
+            ],
             path: "Tests/\(target)/\(name)"))
 }
 
@@ -91,6 +97,6 @@ extension Package.Dependency {
     static func package(name: String, source: Source) -> Package.Dependency {
         return source == .local
             ? .package(name: name, path: source.url(for: name))
-            : .package(name: name, url: source.url(for: name), .branch("dev"))
+            : .package(url: source.url(for: name), branch: "dev")
     }
 }

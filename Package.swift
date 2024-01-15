@@ -23,9 +23,19 @@ let package = Package(
             dependencies: [
                 .product(name: "Stream", package: "stream"),
             ],
-            path: "./Sources/Compression"),
+            path: "./Sources/Compression",
+            swiftSettings: swift6),
     ]
 )
+
+let swift6: [SwiftSetting] = [
+    .enableUpcomingFeature("ConciseMagicFile"),
+    .enableUpcomingFeature("ForwardTrailingClosures"),
+    .enableUpcomingFeature("ExistentialAny"),
+    .enableUpcomingFeature("StrictConcurrency"),
+    .enableUpcomingFeature("ImplicitOpenExistentials"),
+    .enableUpcomingFeature("BareSlashRegexLiterals"),
+]
 
 // MARK: - tests
 
@@ -52,7 +62,8 @@ func addTest(target: String, name: String) {
                 .product(name: "FileSystem", package: "filesystem"),
                 .product(name: "Test", package: "test"),
             ],
-            path: "Tests/\(target)/\(name)"))
+            path: "Tests/\(target)/\(name)",
+            swiftSettings: swift6))
 }
 
 // MARK: - custom package source

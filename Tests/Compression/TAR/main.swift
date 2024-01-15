@@ -4,7 +4,7 @@ import FileSystem
 import DCompression
 
 test("tar archive") {
-    let path = try Path(#file)
+    let path = try Path(#filePath)
         .deletingLastComponent
         .appending("archive.tgz")
 
